@@ -7,6 +7,9 @@ DATABASE_URL = os.getenv(
     "mssql+pyodbc://DESKTOP-TI9LKAR/FactoryQualityDB?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
 )
 
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 connect_args = {}
 if DATABASE_URL.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
@@ -14,7 +17,6 @@ if DATABASE_URL.startswith("sqlite"):
 engine = create_engine(DATABASE_URL, echo=True, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
-
 
 def get_db():
     db = SessionLocal()
