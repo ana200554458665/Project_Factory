@@ -288,3 +288,23 @@ def get_measurements(db: Session = Depends(get_db)):
         })
 
     return result
+
+
+@app.get("/statistics/{identifier_name}")
+def get_statistics(identifier_name: str, db: Session = Depends(get_db)):
+    measurements = db.query(Measurement).filter(
+        Measurement.identifier_name == identifier_name
+    ).all()
+
+    if not measurements:
+        return {"message": "No data"}
+
+    values = [float(m.measured_value) for m in measurements]
+
+    return {
+        "identifier_name": identifier_name,
+        "count": len(values),
+        "min": min(values),
+        "max": max(values),
+        "average": sum(values) / len(values)
+    }
