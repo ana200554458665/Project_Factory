@@ -308,3 +308,7 @@ def get_statistics(identifier_name: str, db: Session = Depends(get_db)):
         "max": max(values),
         "average": sum(values) / len(values)
     }
+from database import Base, engine
+from models import *
+
+Base.metadata.create_all(bind=engine)
